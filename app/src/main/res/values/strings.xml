@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">MDReader</string>
+    <string name="empty_file">没有文件</string>
+    <string name="confirm">确定</string>
+    <string name="cancel">取消</string>
+    <string name="request_permission">权限申请</string>
+    <string name="goto_open">去开启</string>
+    <string name="denied_permission_and_tip">获取读写权限失败，将导致当前应用功能无法正常使用，请授予相关权限</string>
+    <string name="denied_permission_and_dont_tip">您已选择不再提醒，为了正常使用当前应用，请前往设置-应用-当前应用权限中开启存储空间权限</string>
+    <string name="internal_storage_device">内部存储设备</string>
+</resources>
