@@ -12,10 +12,8 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.View
-import android.widget.Toast
 import com.sscience.mdreader.adapter.FileAdapter
 import com.sscience.mdreader.adapter.FileTitleAdapter
 import com.sscience.mdreader.base.BaseActivity
@@ -38,11 +36,13 @@ class MainActivity : BaseActivity() {
     private lateinit var rootPath: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         initFileTile()
         initFile()
+        initPermission()
     }
 
     private fun initFileTile() {
@@ -90,8 +90,7 @@ class MainActivity : BaseActivity() {
         })
     }
 
-    override fun onResume() {
-        super.onResume()
+    private fun initPermission() {
         val fileTitleList: List<FIleTitleBean> = fileTitleAdapter.getDatas()
         if (fileTitleList.isEmpty()) {
             rootPath = Environment.getExternalStorageDirectory().absolutePath
@@ -100,6 +99,11 @@ class MainActivity : BaseActivity() {
             rootPath = fileTitleList[fileTitleList.size - 1].filePath
         }
         checkSelfPermission()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getFiles(rootPath)
     }
 
     // 更新顶部文件位置
@@ -145,8 +149,6 @@ class MainActivity : BaseActivity() {
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
                         MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE)
             }
-        } else {
-            getFiles(rootPath)
         }
     }
 
@@ -157,7 +159,8 @@ class MainActivity : BaseActivity() {
                 getFiles(rootPath)
             } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[0])) {
-                    checkSelfPermission()
+                    permissionDenied(getString(R.string.denied_permission_and_tip),
+                            getString(R.string.confirm))
                 } else {
                     permissionDenied(getString(R.string.denied_permission_and_dont_tip),
                             getString(R.string.goto_open))
@@ -172,8 +175,7 @@ class MainActivity : BaseActivity() {
                 .setTitle(getString(R.string.request_permission))
                 .setMessage(msg)
                 .setPositiveButton(positiveBtn) { dialog, _ ->
-                    dialog.dismiss()
-                    if (TextUtils.equals(positiveBtn, getString(R.string.confirm))) {
+                    if (positiveBtn == getString(R.string.confirm)) {
                         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
                                 MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE)
                     } else {
@@ -182,12 +184,10 @@ class MainActivity : BaseActivity() {
                         intent.data = uri
                         startActivity(intent)
                     }
+                    dialog.dismiss()
                 }
                 .setNegativeButton(getString(R.string.cancel), null)
                 .show()
     }
 
-    private fun showToast(msg: String) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-    }
 }
