@@ -59,6 +59,6 @@ class FileAdapter(context: Context) : BaseAdapter<FileBean>(context) {
     }
 
     private fun getFileMoreVisibility(fileBean: FileBean) =
-            if (fileBean.fileType == FileType.DIRECTORY) View.VISIBLE else View.INVISIBLE
+            if (fileBean.fileType == FileType.DIRECTORY) View.VISIBLE else View.GONE
 
 }

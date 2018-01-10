@@ -34,6 +34,7 @@ class MainActivity : BaseActivity() {
     private lateinit var fileAdapter: FileAdapter
     private lateinit var fileTitleAdapter: FileTitleAdapter
     private lateinit var rootPath: String
+    private lateinit var fileRepository: FileRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -43,6 +44,7 @@ class MainActivity : BaseActivity() {
         initFileTile()
         initFile()
         initPermission()
+        fileRepository = FileRepository()
     }
 
     private fun initFileTile() {
@@ -80,30 +82,37 @@ class MainActivity : BaseActivity() {
                     }
                     FileType.TXT -> IntentUtil.openTextIntent(this@MainActivity, File(data.path))
                     FileType.APK -> IntentUtil.installAppIntent(this@MainActivity, File(data.path))
-                    FileType.HTML -> IntentUtil.openTextIntent(this@MainActivity, File(data.path))
+                    FileType.HTML -> IntentUtil.startMDWebViewActivity(this@MainActivity, data.path)
                     FileType.IMAGE -> IntentUtil.openImageIntent(this@MainActivity, File(data.path))
                     FileType.MUSIC -> IntentUtil.openMusicIntent(this@MainActivity, File(data.path))
                     FileType.VIDEO -> IntentUtil.openVideoIntent(this@MainActivity, File(data.path))
+                    FileType.MD -> IntentUtil.startMDWebViewActivity(this@MainActivity, data.path)
                     else -> IntentUtil.openApplicationIntent(this@MainActivity, File(data.path))
+                }
+            }
+
+            override fun onItemLongClick(data: FileBean, position: Int) {
+                super.onItemLongClick(data, position)
+                val fileType = data.fileType
+                when (fileType) {
+                    FileType.HTML -> IntentUtil.openApplicationIntent(this@MainActivity, File(data.path))
+                    FileType.MD -> IntentUtil.openApplicationIntent(this@MainActivity, File(data.path))
                 }
             }
         })
     }
 
     private fun initPermission() {
-        val fileTitleList: List<FIleTitleBean> = fileTitleAdapter.getDatas()
-        if (fileTitleList.isEmpty()) {
-            rootPath = Environment.getExternalStorageDirectory().absolutePath
-            updateFileTitle(getString(R.string.internal_storage_device), rootPath)
-        } else {
-            rootPath = fileTitleList[fileTitleList.size - 1].filePath
-        }
+        rootPath = Environment.getExternalStorageDirectory().absolutePath
+        updateFileTitle(getString(R.string.internal_storage_device), rootPath)
         checkSelfPermission()
     }
 
     override fun onResume() {
         super.onResume()
-        getFiles(rootPath)
+        val fileTitleList: List<FIleTitleBean> = fileTitleAdapter.getDatas()
+        val path = fileTitleList[fileTitleList.size - 1].filePath
+        getFiles(path)
     }
 
     // 更新顶部文件位置
@@ -116,7 +125,7 @@ class MainActivity : BaseActivity() {
     // 获取文件列表
     private fun getFiles(path: String) {
         val file = File(path + File.separator)
-        FileRepository.getFileList(file, object : DataCallBack {
+        fileRepository.getFileList(file, object : DataCallBack {
             override fun onFileList(fileBeanList: MutableList<FileBean>) {
                 fileAdapter.addData(fileBeanList)
                 ll_empty_file.visibility = if (fileBeanList.isEmpty()) View.VISIBLE else View.GONE

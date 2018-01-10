@@ -23,12 +23,13 @@ import java.io.FileReader
  * @email chentushen.science@gmail.com
  * @data 2018/1/6
  */
-class FileUtil private constructor() {
+class FileUtil {
 
     companion object {
 
         fun getFilePathByUri(context: Context, uri: Uri): String? {
-
+            // content://com.mi.android.globalFileexplorer.myprovider/external_files/Android%E7%9F%A5%E8%AF%86%E7%82%B9.md
+            // content://com.sscience.mdreader.fileProvider/external_storage_root/Android%E7%9F%A5%E8%AF%86%E7%82%B9.md
             // 1，Android 4.4+ && DocumentProvider
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT && DocumentsContract.isDocumentUri(context, uri)) {
                 // ExternalStorageProvider
@@ -73,19 +74,21 @@ class FileUtil private constructor() {
         }
 
         private fun getDataByColumn(context: Context, uri: Uri?, selection: String?, selectionArgs: Array<String>?): String? {
-            val data = MediaStore.Images.Media.DATA
+            val data = MediaStore.MediaColumns.DATA
             val projection = arrayOf(data)
             var cursor: Cursor? = null
             try {
                 cursor = context.contentResolver.query(uri, projection, selection, selectionArgs, null)
                 if (cursor != null && cursor.moveToFirst()) {
-                    val columnIndex = cursor.getColumnIndexOrThrow(data)
-                    return cursor.getString(columnIndex)
+                    val columnIndex = cursor.getColumnIndex(data)
+                    return if (columnIndex > -1) {
+                        cursor.getString(columnIndex)
+                    } else {
+                        null
+                    }
                 }
             } finally {
-                if (cursor != null) {
-                    cursor.close()
-                }
+                cursor?.close()
             }
             return null
         }
@@ -114,7 +117,7 @@ class FileUtil private constructor() {
             return "com.android.providers.media.documents" == uri.authority
         }
 
-        fun getDataByPath(path: String): String {
+        fun getDataByPath(path: String?): String {
             if (TextUtils.isEmpty(path)) {
                 return ""
             }
@@ -141,12 +144,12 @@ class FileUtil private constructor() {
             return sb.toString().replace("```", codeBlock)
         }
 
-        fun saveDataAsHtml(path: String, text: String): Boolean {
+        fun saveDataAsHtml(path: String?, text: String): Boolean {
             if (TextUtils.isEmpty(path) || TextUtils.isEmpty(text)) {
                 return false
             }
             val file = File(path)
-            val html: String = CSS.github + text + CSS.end
+            val html: String = CSS.github2 + text + CSS.end
             var fos: FileOutputStream? = null
             try {
                 fos = FileOutputStream(file)
@@ -220,7 +223,7 @@ class FileUtil private constructor() {
             } else if (file1.isFile && file2.isDirectory) {
                 1
             } else {
-                file1.name.compareTo(file2.name)
+                file1.name.compareTo(file2.name, true)
             }
         }
 
@@ -242,6 +245,16 @@ class FileUtil private constructor() {
                 df.format(k) + " KB"
             } else size.toString() + " B"
 
+        }
+
+        fun getFileName(path: String?): String? {
+            if (path == null) return null
+            var fileName: String? = null
+            val cut = path.lastIndexOf('/')
+            if (cut != -1) {
+                fileName = path.substring(cut + 1)
+            }
+            return fileName
         }
     }
 }

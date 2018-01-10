@@ -6,9 +6,11 @@ package com.sscience.mdreader.listenter
  * @email chentushen.science@gmail.com
  * @data 2018/1/7
  */
-interface OnItemClickListener<T> {
+interface HtmlCallBack {
 
-    fun onItemClick(data: T, position: Int)
+    fun onLoadFileName(fileName: String?)
 
-    fun onItemLongClick(data: T, position: Int){}
+    fun onLoadData(htmlPath: String)
+
+    fun onError(error: String)
 }

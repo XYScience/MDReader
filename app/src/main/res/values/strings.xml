@@ -8,4 +8,8 @@
     <string name="denied_permission_and_tip">获取读写权限失败，将导致当前应用功能无法正常使用，请授予相关权限</string>
     <string name="denied_permission_and_dont_tip">您已选择不再提醒，为了正常使用当前应用，请前往设置-应用-当前应用权限中开启存储空间权限</string>
     <string name="internal_storage_device">内部存储设备</string>
+    <string name="loading">加载中...</string>
+    <string name="md_to_html_error">MarkDown 文本转换 Html 文件出错了</string>
+    <string name="no_file_info">没有获取到文件信息</string>
+    <string name="parse_file_path_error">解析文件路径出错</string>
 </resources>

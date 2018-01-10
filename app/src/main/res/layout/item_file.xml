@@ -3,7 +3,7 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/background"
+                android:background="?android:selectableItemBackground"
                 android:padding="8dp">
 
     <ImageView
@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="6dp"
+        android:layout_marginEnd="4dp"
         android:src="@drawable/ic_folder_grey_600_48dp"/>
 
     <TextView
@@ -20,9 +20,11 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/img_file"
         android:layout_toStartOf="@+id/img_file_more"
+        android:maxLines="2"
+        android:ellipsize="end"
         android:textColor="@color/textPrimary"
-        android:textSize="16sp"
-        tools:text="Android"/>
+        android:textSize="14sp"
+        tools:text="Android232regfdhfmj,kj,jhgersfdghgfgsfcAndroid232regfdhfmj,kj,jhgersfdghgfgsfcdvddvx"/>
 
     <TextView
         android:id="@+id/tv_file_details"
@@ -42,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="4dp"
         android:src="@drawable/ic_keyboard_arrow_right_grey_600_24dp"/>
 
 </RelativeLayout>

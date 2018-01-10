@@ -31,6 +31,10 @@ abstract class BaseAdapter<T>(private var context: Context) :
                 onItemClickListener?.onItemClick(datas[position], viewHolder.adapterPosition)
             }
         })
+        viewHolder.getConvertView().setOnLongClickListener {
+            onItemClickListener?.onItemLongClick(datas[position], viewHolder.adapterPosition)
+            false
+        }
     }
 
     override fun getItemCount(): Int = datas.size

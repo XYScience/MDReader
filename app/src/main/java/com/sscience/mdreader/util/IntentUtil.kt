@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.support.v4.content.FileProvider
+import com.sscience.mdreader.activity.MDViewActivity
 import java.io.File
 
 /**
@@ -46,7 +47,6 @@ class IntentUtil {
         fun openTextIntent(context: Context, file: File) {
             val intent = Intent(Intent.ACTION_VIEW)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//            intent.addCategory("android.intent.category.DEFAULT")
             val uri: Uri = getUri(context, intent, file)
             intent.setDataAndType(uri, "text/*")
             context.startActivity(intent)
@@ -71,8 +71,18 @@ class IntentUtil {
         fun openApplicationIntent(context: Context, file: File) {
             val intent = Intent(Intent.ACTION_VIEW)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//            // 利用反射忽略 Android 7.0+ 的 content://uri 检查
+//            val method: Method = StrictMode::class.java.getDeclaredMethod("disableDeathOnFileUriExposure")
+//            method.invoke("")
             val uri: Uri = getUri(context, intent, file)
             intent.setDataAndType(uri, "application/*")
+            context.startActivity(intent)
+        }
+
+        fun startMDWebViewActivity(context: Context, path: String) {
+            val intent = Intent(context, MDViewActivity::class.java)
+            intent.putExtra("path", path)
+            intent.`package` = context.packageName
             context.startActivity(intent)
         }
 
