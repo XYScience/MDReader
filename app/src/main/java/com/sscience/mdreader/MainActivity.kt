@@ -43,8 +43,7 @@ class MainActivity : BaseActivity() {
 
         initFileTile()
         initFile()
-        initPermission()
-        fileRepository = FileRepository()
+        init()
     }
 
     private fun initFileTile() {
@@ -102,7 +101,9 @@ class MainActivity : BaseActivity() {
         })
     }
 
-    private fun initPermission() {
+    private fun init() {
+        toolbar.title = getString(R.string.app_name)
+        fileRepository = FileRepository()
         rootPath = Environment.getExternalStorageDirectory().absolutePath
         updateFileTitle(getString(R.string.internal_storage_device), rootPath)
         checkSelfPermission()
@@ -129,6 +130,7 @@ class MainActivity : BaseActivity() {
             override fun onFileList(fileBeanList: MutableList<FileBean>) {
                 fileAdapter.addData(fileBeanList)
                 ll_empty_file.visibility = if (fileBeanList.isEmpty()) View.VISIBLE else View.GONE
+                recycler_view.visibility = if (fileBeanList.isEmpty()) View.GONE else View.VISIBLE
             }
         })
     }

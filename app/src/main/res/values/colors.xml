@@ -7,4 +7,5 @@
     <color name="textSecondary">#757575</color>
     <color name="background">#FFFFFF</color>
     <color name="list_divider">#BDBDBD</color>
+    <color name="lollipopStatusBarColor">#40000000</color>
 </resources>

@@ -20,11 +20,11 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/img_file"
         android:layout_toStartOf="@+id/img_file_more"
-        android:maxLines="2"
         android:ellipsize="end"
+        android:maxLines="2"
         android:textColor="@color/textPrimary"
         android:textSize="14sp"
-        tools:text="Android232regfdhfmj,kj,jhgersfdghgfgsfcAndroid232regfdhfmj,kj,jhgersfdghgfgsfcdvddvx"/>
+        tools:text="Android"/>
 
     <TextView
         android:id="@+id/tv_file_details"
