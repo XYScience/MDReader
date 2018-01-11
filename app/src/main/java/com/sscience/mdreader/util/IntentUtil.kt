@@ -1,11 +1,14 @@
 package com.sscience.mdreader.util
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.support.v4.content.FileProvider
+import com.sscience.mdreader.R
 import com.sscience.mdreader.activity.MDViewActivity
+import com.sscience.mdreader.entity.FileBean
 import java.io.File
 
 /**
@@ -79,11 +82,15 @@ class IntentUtil {
             context.startActivity(intent)
         }
 
-        fun startMDWebViewActivity(context: Context, path: String) {
-            val intent = Intent(context, MDViewActivity::class.java)
-            intent.putExtra("path", path)
-            intent.`package` = context.packageName
-            context.startActivity(intent)
+        fun startMDWebViewActivity(activity: Activity, file: FileBean) {
+            val intent = Intent(activity, MDViewActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)  // 后台任务列表的形式打开
+            //intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)  // 以目标 Activity 作为根创建新任务
+            intent.data = Uri.fromFile(File(file.name))
+            intent.putExtra("path", file.path)
+            intent.`package` = activity.packageName
+            activity.startActivity(intent)
+            activity.overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out)
         }
 
         fun sendFile(context: Context, file: File) {

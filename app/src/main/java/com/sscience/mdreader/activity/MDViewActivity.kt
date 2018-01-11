@@ -1,8 +1,6 @@
 package com.sscience.mdreader.activity
 
-import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -27,20 +25,12 @@ class MDViewActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // 设置全屏显示
-        var suv = window.decorView.systemUiVisibility
-        suv = suv or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        window.decorView.systemUiVisibility = suv
-        // Android 6.0+：#20000000的状态栏 + 灰色状态栏图标
-        // Android 5.x：#40000000的状态栏 + 白色状态栏图标
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.statusBarColor = Color.parseColor("#20000000")
-        }
 
         setContentView(R.layout.activity_md_view)
 
         initView()
         getData()
+
     }
 
     private fun initView() {
@@ -61,6 +51,7 @@ class MDViewActivity : BaseActivity() {
         webSetting.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
 
         fileRepository = FileRepository()
+
     }
 
     private fun getData() {
@@ -87,9 +78,15 @@ class MDViewActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == android.R.id.home) {
-            finish()
+            onBackPressed()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finishAndRemoveTask()
+        overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out)
     }
 
     override fun onDestroy() {

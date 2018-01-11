@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -10,11 +10,17 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:listDivider">@drawable/list_divider_horizontal</item>
         <item name="android:colorEdgeEffect">@color/colorAccent</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
+        <item name="android:navigationBarColor" tools:targetApi="27">@android:color/transparent
+        </item>
+    </style>
+
+    <style name="AppTheme" parent="AppTheme.Base">
     </style>
 
     <style name="AppTheme.ColdStart" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorPrimary">@android:color/transparent</item>
-        <item name="colorPrimaryDark">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowBackground">@drawable/bg_cold_start</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>

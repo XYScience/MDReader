@@ -81,11 +81,11 @@ class MainActivity : BaseActivity() {
                     }
                     FileType.TXT -> IntentUtil.openTextIntent(this@MainActivity, File(data.path))
                     FileType.APK -> IntentUtil.installAppIntent(this@MainActivity, File(data.path))
-                    FileType.HTML -> IntentUtil.startMDWebViewActivity(this@MainActivity, data.path)
+                    FileType.HTML -> IntentUtil.startMDWebViewActivity(this@MainActivity, data)
                     FileType.IMAGE -> IntentUtil.openImageIntent(this@MainActivity, File(data.path))
                     FileType.MUSIC -> IntentUtil.openMusicIntent(this@MainActivity, File(data.path))
                     FileType.VIDEO -> IntentUtil.openVideoIntent(this@MainActivity, File(data.path))
-                    FileType.MD -> IntentUtil.startMDWebViewActivity(this@MainActivity, data.path)
+                    FileType.MD -> IntentUtil.startMDWebViewActivity(this@MainActivity, data)
                     else -> IntentUtil.openApplicationIntent(this@MainActivity, File(data.path))
                 }
             }
