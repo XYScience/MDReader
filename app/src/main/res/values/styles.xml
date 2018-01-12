@@ -10,10 +10,6 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:listDivider">@drawable/list_divider_horizontal</item>
         <item name="android:colorEdgeEffect">@color/colorAccent</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
-        <item name="android:navigationBarColor" tools:targetApi="27">@android:color/transparent
-        </item>
     </style>
 
     <style name="AppTheme" parent="AppTheme.Base">

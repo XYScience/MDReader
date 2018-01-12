@@ -28,8 +28,6 @@ class FileUtil {
     companion object {
 
         fun getFilePathByUri(context: Context, uri: Uri): String? {
-            // content://com.mi.android.globalFileexplorer.myprovider/external_files/Android%E7%9F%A5%E8%AF%86%E7%82%B9.md
-            // content://com.sscience.mdreader.fileProvider/external_storage_root/Android%E7%9F%A5%E8%AF%86%E7%82%B9.md
             // 1，Android 4.4+ && DocumentProvider
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT && DocumentsContract.isDocumentUri(context, uri)) {
                 // ExternalStorageProvider

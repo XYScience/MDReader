@@ -3,6 +3,7 @@ package com.sscience.mdreader
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -34,6 +35,8 @@ class MainActivity : BaseActivity() {
     private lateinit var fileAdapter: FileAdapter
     private lateinit var fileTitleAdapter: FileTitleAdapter
     private lateinit var rootPath: String
+    private var lastPositionList: MutableList<String> = mutableListOf()
+    private lateinit var layoutManager: LinearLayoutManager
     private lateinit var fileRepository: FileRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,29 +57,31 @@ class MainActivity : BaseActivity() {
 
         fileTitleAdapter.setOnItemClickListener(object : OnItemClickListener<FIleTitleBean> {
             override fun onItemClick(data: FIleTitleBean, position: Int) {
-                getFiles(data.filePath)
                 val count = fileTitleAdapter.itemCount
                 val removeCount = count - position - 1
                 for (i in 0 until removeCount) {
                     fileTitleAdapter.removeLastItem()
                 }
+                getFiles(data.filePath, lastPositionList.size - 1 - position)
             }
         })
     }
 
     private fun initFile() {
         fileAdapter = FileAdapter(this)
-        val layoutManager = LinearLayoutManager(this)
+        layoutManager = LinearLayoutManager(this)
         recycler_view.layoutManager = layoutManager
         recycler_view.setHasFixedSize(true)
         recycler_view.addItemDecoration(DividerItemDecoration(this, layoutManager.orientation))
         recycler_view.adapter = fileAdapter
         fileAdapter.setOnItemClickListener(object : OnItemClickListener<FileBean> {
             override fun onItemClick(data: FileBean, position: Int) {
+                savePosition()
+
                 val fileType = data.fileType
                 when (fileType) {
                     FileType.DIRECTORY -> {
-                        getFiles(data.path)
+                        getFiles(data.path, -1)
                         updateFileTitle(data.name, data.path)
                     }
                     FileType.TXT -> IntentUtil.openTextIntent(this@MainActivity, File(data.path))
@@ -101,6 +106,18 @@ class MainActivity : BaseActivity() {
         })
     }
 
+    /**
+     * 保存当前 item 位置
+     */
+    private fun savePosition() {
+        val position = layoutManager.findFirstVisibleItemPosition()
+        val view = layoutManager.findViewByPosition(position)
+        if (view != null) {
+            val top = view.top
+            lastPositionList.add(position.toString() + "&" + top.toString())
+        }
+    }
+
     private fun init() {
         toolbar.title = getString(R.string.app_name)
         fileRepository = FileRepository()
@@ -113,7 +130,7 @@ class MainActivity : BaseActivity() {
         super.onResume()
         val fileTitleList: List<FIleTitleBean> = fileTitleAdapter.getDatas()
         val path = fileTitleList[fileTitleList.size - 1].filePath
-        getFiles(path)
+        getFiles(path, -1)
     }
 
     // 更新顶部文件位置
@@ -124,15 +141,42 @@ class MainActivity : BaseActivity() {
     }
 
     // 获取文件列表
-    private fun getFiles(path: String) {
+    private fun getFiles(path: String, removeCount: Int) {
         val file = File(path + File.separator)
         fileRepository.getFileList(file, object : DataCallBack {
             override fun onFileList(fileBeanList: MutableList<FileBean>) {
-                fileAdapter.addData(fileBeanList)
-                ll_empty_file.visibility = if (fileBeanList.isEmpty()) View.VISIBLE else View.GONE
                 recycler_view.visibility = if (fileBeanList.isEmpty()) View.GONE else View.VISIBLE
+                fileAdapter.addData(fileBeanList)
+                revertPosition(removeCount)
+
+                if (fileBeanList.isEmpty()) {
+                    ll_loading.visibility = View.VISIBLE
+                    tv_loading.text = getString(R.string.empty_file)
+                    val drawable: Drawable = resources.getDrawable(R.drawable.ic_empty_grey_600_48dp)
+                    drawable.setBounds(0, 0, drawable.minimumWidth, drawable.minimumHeight)
+                    tv_loading.setCompoundDrawables(null, drawable, null, null)
+                } else {
+                    ll_loading.visibility = View.GONE
+                }
             }
         })
+    }
+
+    /**
+     * 还原上一级位置
+     */
+    private fun revertPosition(removeCount: Int) {
+        if (removeCount == -1) {
+            return
+        }
+        for (i in 0 until removeCount) {
+            lastPositionList.removeAt(lastPositionList.size - 1)
+        }
+        val lastPosition: String = lastPositionList[lastPositionList.size - 1]
+        val po: List<String> = lastPosition.split("&")
+        layoutManager.scrollToPositionWithOffset(po[0].toInt(), po[1].toInt())
+
+        lastPositionList.removeAt(lastPositionList.size - 1)
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -142,7 +186,7 @@ class MainActivity : BaseActivity() {
                 finish()
             } else {
                 fileTitleAdapter.removeItem(fileTitleList.size - 1)
-                getFiles(fileTitleList[fileTitleList.size - 1].filePath)
+                getFiles(fileTitleList[fileTitleList.size - 1].filePath, 0)
             }
             return true
         }
@@ -167,7 +211,7 @@ class MainActivity : BaseActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getFiles(rootPath)
+                getFiles(rootPath, -1)
             } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[0])) {
                     permissionDenied(getString(R.string.denied_permission_and_tip),

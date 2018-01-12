@@ -26,7 +26,7 @@
         layout="@layout/layout_divider"/>
 
     <LinearLayout
-        android:id="@+id/ll_empty_file"
+        android:id="@+id/ll_loading"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -34,12 +34,13 @@
         android:gravity="center">
 
         <TextView
+            android:id="@+id/tv_loading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:drawablePadding="10dp"
-            android:drawableTop="@drawable/ic_empty_grey_600_48dp"
-            android:text="@string/empty_file"
+            android:drawableTop="@drawable/ic_loading"
+            android:text="@string/loading"
             android:textColor="@color/textSecondary"
             android:textSize="14sp"/>
 
