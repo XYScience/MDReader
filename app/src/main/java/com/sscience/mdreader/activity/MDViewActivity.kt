@@ -1,5 +1,6 @@
 package com.sscience.mdreader.activity
 
+import android.app.ActivityManager
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.MenuItem
@@ -57,6 +58,7 @@ class MDViewActivity : BaseActivity() {
     private fun getData() {
         fileRepository.getHtmlFileByMD(this, intent, object : HtmlCallBack {
             override fun onLoadFileName(fileName: String?) {
+                setTaskDescription(ActivityManager.TaskDescription(fileName, null, 0))
                 toolbar.title = fileName
             }
 
@@ -86,7 +88,7 @@ class MDViewActivity : BaseActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         finishAndRemoveTask()
-        overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out)
+//        overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out)
     }
 
     override fun onDestroy() {

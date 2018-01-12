@@ -19,6 +19,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     private fun initSystemUI() {
+        // 状态栏导航栏相关设置放在 style.xml 配置
     }
 
     fun showToast(msg: String) {
