@@ -22,6 +22,20 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    android.applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                // 输出apk名称为mdreader_v1.0_release_releaseTime.apk
+                def fileName = "mdreader_v${defaultConfig.versionName}_${variant.buildType.getName()}_${releaseTime()}.apk"
+                outputFileName = fileName
+            }
+        }
+    }
+}
+
+static def releaseTime() {
+    return new Date().format("yyyyMMddHHmmss")
 }
 
 dependencies {
